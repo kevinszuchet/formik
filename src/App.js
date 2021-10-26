@@ -1,24 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { useFormik } from 'formik';
+
+const validate = (values) => {
+  const errors = {};
+
+  if (!values.name)
+    errors.name = 'Required';
+  else if (values.name.length < 5)
+    errors.name = 'The name is too short';
+
+  if (!values.lastName)
+    errors.lastName = 'Required';
+  else if (values.lastName.length < 5)
+    errors.lastName = 'The last name is too short';
+
+  return errors;
+}
 
 function App() {
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      lastName: '',
+      email: ''
+    },
+    validate,
+    onSubmit: (values) => console.log(values)
+  });
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <form onSubmit={formik.handleSubmit}>
+      <label>First Name</label>
+      <input type="text" {...formik.getFieldProps('name') }/>
+      {formik.touched.name && formik.errors.name ? <div>{formik.errors.name}</div> : null}
+      <br />
+      <label>Last Name</label>
+      <input type="text" {...formik.getFieldProps('lastName') }/>
+      {formik.touched.lastName && formik.errors.lastName ? <div>{formik.errors.lastName}</div> : null}
+      <br />
+      <label>Email</label>
+      <input type="text" {...formik.getFieldProps('email') }/>
+      {formik.touched.email && formik.errors.email ? <div>{formik.errors.email}</div> : null}
+      <br />
+      <button type="submit">Send</button>
+    </form>
   );
 }
 
